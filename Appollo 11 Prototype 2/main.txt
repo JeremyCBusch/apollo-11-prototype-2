@@ -1,0 +1,195 @@
+#define DEBUG
+
+#include "lander.h"
+#include <iostream>
+#include <cassert>
+#include <cmath>
+using namespace std;
+
+
+double convertDegreesToRadians(double degrees) {
+	const double pi = 3.14159265358979323846;
+	return ((2 * pi * degrees) / 360);
+}
+
+double computeAcceleration(double thrust, double weight, double gravity = 0.0)
+{
+	assert(thrust > 0.0);
+	assert(weight > 0.0);
+	double acceleration = thrust / weight;
+
+	assert(gravity <= 0.0);
+	return gravity + acceleration;
+}
+
+double getVerticalAcceleration(double thrust, double angle, double weight, double gravity) {
+	double radians = convertDegreesToRadians(angle);
+	double force = thrust * cos(radians) + gravity;
+	return computeAcceleration(force, weight, gravity);
+}
+
+double getHorizontalAcceleration(double thrust, double angle, double weight) {
+	double radians = convertDegreesToRadians(angle);
+	double force = thrust * sin(radians);
+	return computeAcceleration(force, weight);
+}
+
+
+
+
+double hangTime(double altitude, double velocity, double acceleration)
+{
+	assert(altitude > 0.0);
+
+	double time;
+
+	double inner = velocity * velocity - 2 * acceleration * altitude;
+
+	if (inner > 0)
+		time = (-velocity + sqrt(inner)) / acceleration;
+	else
+		time = -1.0;
+
+	return time;
+}
+
+double updateVelocity(double velocity, double acceleration, double time)
+{
+	return velocity + acceleration * time;
+}
+
+double computeTotalVelocity(double vVelocity, double hVelocity)
+{
+	return sqrt(vVelocity * vVelocity + hVelocity * hVelocity);
+}
+
+double prompt(const char* output)
+{
+	double input;
+	std::cout << output;
+	std::cin >> input;
+	return input;
+}
+
+double updateHDisplacement(double hVelocity, double hDisplacement, double seconds) {
+	return (hDisplacement - hVelocity/seconds);
+}
+
+double updateAltitude(double vVelocity, double altitude, double seconds) {
+	return (altitude - vVelocity/seconds);
+}
+
+void getStatus(int second, double xDisplacement, double altitude, double hVelocity,double vVelocity, double totalVelocity, double angle)
+{
+	
+
+	std::cout << second << "s - x,y:(" << xDisplacement << ", " << altitude << ")m  dx, dy:("
+		<< hVelocity << ", " << vVelocity << ")m / s  speed : " << totalVelocity << "m / s  angle : "
+		<< angle << "deg" << std::endl;
+
+}
+
+int main()
+{
+	double weight = 15103.00;
+	double vThrust = 45000.00;
+	double hThrust = 450.00;
+	double gravity = -1.625;
+
+	double xDisplacement = 0;
+	double vAcceleration;
+	double hAcceleration;
+	double time;
+	double totalVelocity;
+
+	double vVelocity = -10; //prompt("What is your vertical velocity (m/s)? ");
+	double hVelocity = 0; //prompt("What is your horizontal velocity (m/s)? ");
+	double altitude = 100; //prompt("What is your altitude (m)? ");
+	double angle = 60; //prompt("What is the angle of the LM where 0 is up (degrees)? ");
+
+	Lander lander(vVelocity, hVelocity, altitude, angle);
+
+	
+	// put this code block in the lander class later
+	for (int intervals = 0; intervals < 2; intervals++) {
+		for (int seconds = 1; seconds < 6; seconds++) {
+			
+
+			
+			vAcceleration = getVerticalAcceleration(vThrust, angle, weight, gravity);
+			hAcceleration = getHorizontalAcceleration(hThrust, angle, weight);
+
+			time = hangTime(altitude, vVelocity, vAcceleration);
+
+			vVelocity = updateVelocity(vVelocity, vAcceleration, 1.0);
+			hVelocity = updateVelocity(hVelocity, hAcceleration, 1.0);
+
+			xDisplacement = updateHDisplacement(hVelocity, xDisplacement, seconds);
+			altitude = updateAltitude(vVelocity, altitude, seconds);
+
+			totalVelocity = computeTotalVelocity(vVelocity, hVelocity);
+			getStatus(seconds, xDisplacement, altitude, hVelocity, vVelocity, totalVelocity, angle);
+		}
+		if (intervals < 1) {
+			angle = -60.0;//prompt("What is the new angle of the LM where 0 is up (degrees)? ");
+		}
+	}
+	// stop here
+	
+	
+	/*if (time < 0)
+		std::cout << "\tYou will not land, but rather fly off into space.\n";
+	else
+	{
+		std::cout << "Time to Landing: " << time << " s" << std::endl;
+		std::cout << "Vertical Velocity: " << vVelocity << " m/s" << std::endl;
+		std::cout << "Horizontal Velocity: " << hVelocity << " m/s" << std::endl;
+		std::cout << "Total Velocity: " << totalVelocity << " m/s" << std::endl;
+	}
+	return 0;*/
+
+	return 0;
+}
+
+
+//1s - x, y:(4.06, 88.73)m  dx, dy : (-4.06, 11.27)m / s  speed : 11.98m / s  angle : 60.00deg
+//2s - x, y : (6.18, 82.58)m  dx, dy : (-4.25, 12.29)m / s  speed : 13.01m / s  angle : 60.00deg
+//3s - x, y : (7.65, 78.19)m  dx, dy : (-4.42, 13.17)m / s  speed : 13.89m / s  angle : 60.00deg
+//4s - x, y : (8.79, 74.70)m  dx, dy : (-4.57, 13.95)m / s  speed : 14.68m / s  angle : 60.00deg
+//5s - x, y : (9.74, 71.77)m  dx, dy : (-4.70, 14.66)m / s  speed : 15.39m / s  angle : 60.00deg
+
+//1s - x, y:(-0.03, 110.14)m  dx, dy : (0.03, -10.14)m / s  speed : 10.14m / s  angle : 60.00deg
+//2s - x, y : (-0.05, 115.27)m  dx, dy : (0.05, -10.27)m / s  speed : 10.27m / s  angle : 60.00deg
+//3s - x, y : (-0.08, 118.74)m  dx, dy : (0.08, -10.41)m / s  speed : 10.41m / s  angle : 60.00deg
+//4s - x, y : (-0.10, 121.37)m  dx, dy : (0.10, -10.54)m / s  speed : 10.54m / s  angle : 60.00deg
+//5s - x, y : (-0.13, 123.51)m  dx, dy : (0.13, -10.68)m / s  speed : 10.68m / s  angle : 60.00deg
+
+//1s - x, y:(3.87, 89.80)m  dx, dy : (2.58, -10.14)m / s  speed : 10.46m / s  angle : 60.00deg
+//2s - x, y : (10.32, 79.46)m  dx, dy : (5.16, -10.27)m / s  speed : 11.49m / s  angle : 60.00deg
+//3s - x, y : (19.35, 68.99)m  dx, dy : (7.74, -10.41)m / s  speed : 12.97m / s  angle : 60.00deg
+//4s - x, y : (30.96, 58.38)m  dx, dy : (10.32, -10.54)m / s  speed : 14.75m / s  angle : 60.00deg
+//5s - x, y : (45.16, 47.63)m  dx, dy : (12.90, -10.68)m / s  speed : 16.75m / s  angle : 60.00deg
+
+//double getVerticalAcceleration(double angledForce, double angle, double weight, double gravity) {
+//
+//
+//	double radians = convertDegreesToRadians(angle);
+//
+//	double angledAcceleration = angledForce / weight;
+//
+//	double verticalAcceleration = angledAcceleration * cos(radians);
+//
+//
+//	return verticalAcceleration;
+//}
+//
+//double getHorizontalAcceleration(double angledForce, double angle, double weight) {
+//
+//	double radians = convertDegreesToRadians(angle);
+//
+//	double angledAcceleration = angledForce / weight;
+//
+//	double horizontalAcceleration = angledAcceleration * sin(radians);
+//
+//	return horizontalAcceleration;
+//}
