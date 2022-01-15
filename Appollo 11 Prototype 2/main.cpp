@@ -1,152 +1,119 @@
-#include "lander.h"
-#include <iostream>
+#define DEBU
 #include <cassert>
-#include <cmath>
-using namespace std;
+#include <iostream>
+#include "lander.h"
 
-
-double convertDegreesToRadians(double degrees) {
-	const double pi = 3.14159265358979323846;
-	return ((2 * pi * degrees) / 360);
+#ifdef DEBUG
+double roundTo2ndDecimal(double number) {
+	return std::round(number * 100) / 100;
 }
-
-double computeAcceleration(double thrust, double weight, double gravity = 0.0)
+void testLander()
 {
-	assert(thrust > 0.0);
-	assert(weight > 0.0);
-	double acceleration = thrust / weight;
+	// Prep
+	double vVelocity = -10;
+	double hVelocity = 0;
+	double altitude = 100;
+	double angle = 60;
 
-	assert(gravity <= 0.0);
-	return gravity + acceleration;
+	double weight = 15103.00;
+	double gravity = -1.625;
+	double vThrust = 45000.00;
+	double hThrust = 450.00;
+	// Action
+	Lander l1(vVelocity, hVelocity, altitude, angle);
+	// Test Result
+	assert(l1.altitude == altitude);
+	assert(l1.vVelocity == vVelocity);
+	assert(l1.hVelocity == hVelocity);
+	assert(l1.altitude == altitude);
+	assert(l1.weight == weight);
+	assert(l1.gravity == gravity);
+	assert(l1.vThrust == vThrust);
+	assert(l1.hThrust == hThrust);
 }
-
-double getVerticalAcceleration(double thrust, double angle, double weight, double gravity) {
-	double radians = convertDegreesToRadians(angle);
-	double force = thrust * cos(radians) + gravity;
-	return computeAcceleration(force, weight, gravity);
-}
-
-double getHorizontalAcceleration(double thrust, double angle, double weight) {
-	double radians = convertDegreesToRadians(angle);
-	double force = thrust * sin(radians);
-	return computeAcceleration(force, weight);
-}
-
-
-
-
-double hangTime(double altitude, double velocity, double acceleration)
+void testIncrementTime()
 {
-	assert(altitude > 0.0);
+	// Prep
+	double vVelocity = -10;
+	double hVelocity = 0;
+	double altitude = 100;
+	double angle = 60;
+	Lander l1(vVelocity, hVelocity, altitude, angle);
+	// Action
+	l1.incrementTime(1);
+	// Test Result
+	assert(l1.seconds == 1);
+	assert(roundTo2ndDecimal(l1.angle) == 60.00);
+	assert(roundTo2ndDecimal(l1.xDisplacement) == 3.87);
+	assert(roundTo2ndDecimal(l1.altitude) == 89.80);
+	assert(roundTo2ndDecimal(l1.hVelocity) == 2.58);
+	assert(roundTo2ndDecimal(l1.vVelocity) == -10.14);
+	// Action
+	l1.incrementTime(1);
+	// Test Result
+	assert(roundTo2ndDecimal(l1.seconds) == 2);
+	assert(roundTo2ndDecimal(l1.xDisplacement) == 10.32);
+	assert(roundTo2ndDecimal(l1.altitude) == 79.48);
+	assert(roundTo2ndDecimal(l1.hVelocity) == 5.16);
+	assert(roundTo2ndDecimal(l1.vVelocity) == -10.27);
+	assert(roundTo2ndDecimal(l1.angle) == 60.00);
 
-	double time;
-
-	double inner = velocity * velocity - 2 * acceleration * altitude;
-
-	if (inner > 0)
-		time = (-velocity + sqrt(inner)) / acceleration;
-	else
-		time = -1.0;
-
-	return time;
 }
-
-double updateVelocity(double velocity, double acceleration, double time)
+void testConvertDegreesToRadians()
 {
-	return velocity + acceleration * time;
-}
 
-double computeTotalVelocity(double vVelocity, double hVelocity)
+}
+void testGetHorizontalAcceleration()
 {
-	return sqrt(vVelocity * vVelocity + hVelocity * hVelocity);
-}
 
-double prompt(const char* output)
+}
+void testComputeAcceleration()
 {
-	double input;
-	std::cout << output;
-	std::cin >> input;
-	return input;
-}
 
-double updateHDisplacement(double hVelocity, double hDisplacement) {
-	return (hDisplacement + hVelocity);
 }
-
-double updateAltitude(double vVelocity, double altitude) {
-	return (altitude + vVelocity);
-}
-
-void getStatus(int second, double xDisplacement, double altitude, double hVelocity,double vVelocity, double totalVelocity, double angle)
+void testGetHangTime()
 {
-	
-
-	std::cout << second << "s - x,y:(" << xDisplacement << ", " << altitude << ")m  dx, dy:("
-		<< hVelocity << ", " << vVelocity << ")m / s  speed : " << totalVelocity << "m / s  angle : "
-		<< angle << "deg" << std::endl;
 
 }
+void testComputeTotalVelocity()
+{
+
+}
+void runTestSuite()
+{
+	testComputeTotalVelocity();
+	testGetHangTime();
+	testComputeAcceleration();
+	testGetHorizontalAcceleration();
+	testConvertDegreesToRadians();
+	testIncrementTime();
+	testLander();
+}
+#endif
 
 int main()
 {
-	double weight = 15103.00;
-	double vThrust = 45000.00;
-	double hThrust = 450.00;
-	double gravity = -1.625;
-
-	double xDisplacement = 0;
-	double vAcceleration;
-	double hAcceleration;
-	double time;
-	double totalVelocity;
-
-	std::cout.setf(std::ios::fixed | std::ios::showpoint);
-	std::cout.precision(2);
-
-	double vVelocity = -10; //prompt("What is your vertical velocity (m/s)? ");
-	double hVelocity = 0; //prompt("What is your horizontal velocity (m/s)? ");
-	double altitude = 100; //prompt("What is your altitude (m)? ");
-	double  angle = 60; //prompt("What is the angle of the LM where 0 is up (degrees)? ");
-
-	
-	// put this code block in the lander class later
-	for (int intervals = 0; intervals < 2; intervals++) {
-		for (int seconds = 1; seconds < 6; seconds++) {
-			
-
-			
-			vAcceleration = getVerticalAcceleration(vThrust, angle, weight, gravity);
-			hAcceleration = getHorizontalAcceleration(hThrust, angle, weight);
-
-			cout << "horizontal acceleration: " << hAcceleration << endl;
-			cout << "vertical acceleration: " << vAcceleration << endl;
-
-			time = hangTime(altitude, vVelocity, vAcceleration);
-
-			vVelocity = updateVelocity(vVelocity, vAcceleration, time);
-			hVelocity = updateVelocity(hVelocity, hAcceleration, time);
-
-			xDisplacement = updateHDisplacement(hVelocity, xDisplacement);
-			altitude = updateAltitude(vVelocity, altitude);
-
-			totalVelocity = computeTotalVelocity(vVelocity, hVelocity);
-			getStatus(seconds, xDisplacement, altitude, hVelocity, vVelocity, totalVelocity, angle);
-		}
-		if (intervals < 1) {
-			angle = prompt("What is the new angle of the LM where 0 is up (degrees)? ");
-		}
-	}
-	// stop here
-	
-	
-	/*if (time < 0)
-		std::cout << "\tYou will not land, but rather fly off into space.\n";
-	else
+#ifdef DEBUG
+	std::cout << "Hello Debug" << std::endl;
+	runTestSuite();
+#else
+	std::cout << "Hello Live" << std::endl;
+	double vVelocity = -10.0;
+	double hVelocity = 0.0;
+	double altitude = 100.0;
+	double angle = 60.0;
+	Lander lander(vVelocity, hVelocity, altitude, angle);
+	for (int i = 0; i < 5; i++)
 	{
-		std::cout << "Time to Landing: " << time << " s" << std::endl;
-		std::cout << "Vertical Velocity: " << vVelocity << " m/s" << std::endl;
-		std::cout << "Horizontal Velocity: " << hVelocity << " m/s" << std::endl;
-		std::cout << "Total Velocity: " << totalVelocity << " m/s" << std::endl;
+		lander.incrementTime(1);
+		lander.displayStatus();
 	}
-	return 0;*/
+	lander.changeAngle(-60.0);
+	for (int i = 0; i < 5; i++)
+	{
+		lander.incrementTime(1);
+		lander.displayStatus();
+	}
+#endif
+	return 0;
 }
