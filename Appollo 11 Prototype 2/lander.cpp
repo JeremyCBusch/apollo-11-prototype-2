@@ -15,8 +15,8 @@ void Lander::incrementTime(int seconds)
 	this->seconds += seconds;
 
 	updateVelocity(seconds);
-	updateHDisplacement();
-	updateAltitude();
+	updateHDisplacement(seconds);
+	updateAltitude(seconds);
 }
 
 void Lander::displayStatus()
@@ -41,7 +41,7 @@ void Lander::changeAngle(double angle)
 double Lander::convertDegreesToRadians(double degrees)
 {
 	const double pi = 3.14159265358979323846;
-	return ((2 * pi * degrees) / 360);
+	return (2 * pi * degrees) / 360;
 }
 
 double Lander::getVerticalAcceleration()
@@ -55,12 +55,12 @@ double Lander::getHorizontalAcceleration()
 {
 	double radians = convertDegreesToRadians(angle);
 	double force = hThrust * sin(radians);
-	return computeAcceleration(force, weight);
+	return computeAcceleration(force, weight) * 100;
 }
 
 double Lander::computeAcceleration(double thrust, double weight, double gravity)
 {
-	assert(thrust > 0.0);
+	//assert(thrust > 0.0);
 	assert(weight > 0.0);
 	double acceleration = thrust / weight;
 
@@ -79,12 +79,12 @@ double Lander::computeTotalVelocity()
 	return sqrt(vVelocity * vVelocity + hVelocity * hVelocity);
 }
 
-void Lander::updateAltitude()
+void Lander::updateAltitude(int seconds)
 {
-	altitude = altitude + vVelocity;
+	altitude = altitude + vVelocity * seconds + 0.5 * getVerticalAcceleration() * (seconds * seconds);
 }
 
-void Lander::updateHDisplacement()
+void Lander::updateHDisplacement(int seconds)
 {
-	xDisplacement = xDisplacement + hVelocity;
+	xDisplacement = xDisplacement + hVelocity * seconds + 0.5 * getHorizontalAcceleration() * (seconds * seconds);
 }

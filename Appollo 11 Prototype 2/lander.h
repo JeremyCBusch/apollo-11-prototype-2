@@ -9,9 +9,9 @@ public:
 	void incrementTime(int);
 	void displayStatus();
 	void changeAngle(double angle);
-#ifndef DEBUG
-private:
-#endif
+//#ifndef DEBUG
+//private:
+//#endif
 	const double weight =  15103.00; // kg
 	const double gravity =   -1.625; // m/s^2
 	const double vThrust = 45000.00; // N
@@ -31,7 +31,7 @@ private:
 	double computeAcceleration(double thrust, double weight, double gravity = 0.0);
 	void updateVelocity(int seconds);
 	double computeTotalVelocity();
-	void updateAltitude();
-	void updateHDisplacement();
+	void updateAltitude(int seconds);
+	void updateHDisplacement(int seconds);
 };
 

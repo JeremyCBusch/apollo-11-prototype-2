@@ -61,17 +61,30 @@ void testIncrementTime()
 }
 void testConvertDegreesToRadians()
 {
-
+	// Prep
+	double vVelocity = -10;
+	double hVelocity = 0;
+	double altitude = 100;
+	double angle = 60;
+	Lander l1(vVelocity, hVelocity, altitude, angle);
+	// Tests
+	assert(roundTo2ndDecimal(l1.convertDegreesToRadians(10.0)) == roundTo2ndDecimal(0.174533));
+	assert(roundTo2ndDecimal(l1.convertDegreesToRadians(100)) == roundTo2ndDecimal(1.74533));
+	assert(roundTo2ndDecimal(l1.convertDegreesToRadians(1)) == roundTo2ndDecimal(0.0174533));
+	assert(roundTo2ndDecimal(l1.convertDegreesToRadians(360)) == roundTo2ndDecimal(6.28319));
+	assert(roundTo2ndDecimal(l1.convertDegreesToRadians(-60)) == roundTo2ndDecimal(-1.0472));
+	assert(roundTo2ndDecimal(l1.convertDegreesToRadians(0)) == roundTo2ndDecimal(0));
 }
 void testGetHorizontalAcceleration()
 {
-
+	// Prep
+	double vVelocity = -10;
+	double hVelocity = 0;
+	double altitude = 100;
+	double angle = 60;
+	Lander l1(vVelocity, hVelocity, altitude, angle);
 }
 void testComputeAcceleration()
-{
-
-}
-void testGetHangTime()
 {
 
 }
@@ -82,7 +95,6 @@ void testComputeTotalVelocity()
 void runTestSuite()
 {
 	testComputeTotalVelocity();
-	testGetHangTime();
 	testComputeAcceleration();
 	testGetHorizontalAcceleration();
 	testConvertDegreesToRadians();
@@ -98,6 +110,8 @@ int main()
 	runTestSuite();
 #else
 	std::cout << "Hello Live" << std::endl;
+	std::cout << "\nLander 1:\n";
+
 	double vVelocity = -10.0;
 	double hVelocity = 0.0;
 	double altitude = 100.0;
@@ -113,6 +127,25 @@ int main()
 	{
 		lander.incrementTime(1);
 		lander.displayStatus();
+	}
+
+	std::cout << "\n\nLander 2:\n";
+
+	vVelocity = -13.959;
+	hVelocity = 10.53;
+	altitude = 100.0;
+	angle = -45.0;
+	Lander lander2(vVelocity, hVelocity, altitude, angle);
+	for (int i = 0; i < 5; i++)
+	{
+		lander2.incrementTime(1);
+		lander2.displayStatus();
+	}
+	lander2.changeAngle(0.0);
+	for (int i = 0; i < 5; i++)
+	{
+		lander2.incrementTime(1);
+		lander2.displayStatus();
 	}
 #endif
 	return 0;
