@@ -44,7 +44,6 @@ private:
 	double angle;
 	double altitude;
 	double xDisplacement = 0;
-	double yDisplacement = 0;
 	int seconds = 0;
 	// Calculations
 	double computeAcceleration(double thrust, double weight, double gravity = 0.0);
