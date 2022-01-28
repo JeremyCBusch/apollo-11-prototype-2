@@ -1,8 +1,16 @@
-/**********************************************************************
- * GL Demo
- * Just a simple program to demonstrate how to create an Open GL window,
- * draw something on the window, and accept simple user input
- **********************************************************************/
+/*************************************************************
+ * 1. Name:
+ *      Jacob Morgan, Jeremy Busch
+ * 2. Assignment Name:
+ *      Lab 04: Apollo 11 Visuals
+ * 3. Assignment Description:
+ *      Simulate the Apollo 11 landing
+ * 4. What was the hardest part? Be as specific as possible.
+ *      gettting the lander object created. We had an error where the header file wasn't put   
+ *      in the header file folder that caused an error code that we didn't recognize.
+ * 5. How long did it take for you to complete the assignment?
+ *      3 hours
+ *****************************************************************/
 
 #include "point.h"
 #include "uiInteract.h"
@@ -10,6 +18,7 @@
 #include "ground.h"
 #include "Star.h"
 #include <vector>
+#include "lander.h"
 using namespace std;
 
 /*************************************************************************
@@ -22,7 +31,8 @@ public:
     Demo(const Point& ptUpperRight) :
         angle(0.0),
         ptLM(ptUpperRight.getX() / 2.0, ptUpperRight.getY() / 2.0),
-        ground(ptUpperRight)
+        ground(ptUpperRight),
+        LM(0.0, 0.0, 0.0, 0.0)
     {
         for (int i = 0; i < 50; i++)
         {
@@ -36,7 +46,18 @@ public:
     double angle;         // angle the LM is pointing
     Ground ground;
     vector<Star> ptStars;
+    Lander LM;
+    
 };
+
+/*************************
+ * GET GROUND ELEVATION 
+ * returns the distance between the lander and the ground.
+ *************************/
+double getGroundElevation(double x, double landerWidth)
+{
+    return 0.0;
+}
 
 /*************************************
  * All the interesting work happens here, when
@@ -49,9 +70,13 @@ void callBack(const Interface* pUI, void* p)
 {
     ogstream gout;
 
+    
+
     // the first step is to cast the void pointer into a game object. This
     // is the first step of every single callback function in OpenGL. 
     Demo* pDemo = (Demo*)p;
+    
+    pDemo->LM.incrementTime(0.03);
 
     // move the ship around
     if (pUI->isRight())
@@ -59,9 +84,9 @@ void callBack(const Interface* pUI, void* p)
     if (pUI->isLeft())
         pDemo->ptLM.addX(-1.0);
     if (pUI->isUp())
-        pDemo->ptLM.addY(-1.0);
-    if (pUI->isDown())
         pDemo->ptLM.addY(1.0);
+    if (pUI->isDown())
+        pDemo->ptLM.addY(-1.0);
 
     // draw our little stars
     for (Star & star : pDemo->ptStars)
@@ -76,11 +101,22 @@ void callBack(const Interface* pUI, void* p)
     // draw the lander and its flames
     gout.drawLander(pDemo->ptLM /*position*/, pDemo->angle /*angle*/);
     gout.drawLanderFlames(pDemo->ptLM, pDemo->angle, /*angle*/
-        pUI->isDown(), pUI->isLeft(), pUI->isRight());
+        pUI->isUp(), pUI->isLeft(), pUI->isRight());
 
     // put some text on the screen
-    gout.setPosition(Point(30.0, 30.0));
-    gout << "Demo (" << (int)pDemo->ptLM.getX() << ", " << (int)pDemo->ptLM.getY() << ")" << "\n";
+    // need to add speed fuel and altitude  
+    
+
+    
+    gout.setPosition(Point(30.0, 755.0));
+    gout << "The Jeremy Experience TM"  << "\n";
+    gout.setPosition(Point(30.0, 740.0));
+    gout << "Fuel: N/A" << "\n";
+    gout.setPosition(Point(30.0, 725.0));
+    gout << "Altitude: " <<  pDemo->LM.getAltitude() << "\n";
+    gout.setPosition(Point(30.0, 710.0));
+    gout << "Speed: " << pDemo->LM.getSpeed() << "\n";
+    
 }
 
 /*********************************
@@ -113,3 +149,4 @@ int main(int argc, char** argv)
 
     return 0;
 }
+

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="glDemo.cpp" />
     <ClCompile Include="ground.cpp" />
+    <ClCompile Include="lander.cpp" />
     <ClCompile Include="point.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="uiDraw.cpp" />
@@ -28,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ground.h" />
+    <ClInclude Include="lander.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="uiDraw.h" />

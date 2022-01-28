@@ -1,31 +1,18 @@
 #pragma once
 
 #include "point.h"
-
+/*************************
+ * Star:
+ * This class represents a star. Which has a position and increments phase.
+ *************************/
 class Star
 {
 public:
-	Star(const Point& point, unsigned char phase)
-	{
-		this->point = Point(point.getX(), point.getY());
-		this->phase = phase;
-	}
+	Star(const Point& point, unsigned char phase);
 
-	void incrementPhase()
-	{
-		phase++;
-	}
-
-	const Point & getPoint()
-	{
-		return point;
-	}
-
-	unsigned char getPhase()
-	{
-		return phase;
-	}
-
+	void incrementPhase();
+	const Point& getPoint();
+	unsigned char getPhase();
 private:
 	unsigned char phase;
 	Point point;
