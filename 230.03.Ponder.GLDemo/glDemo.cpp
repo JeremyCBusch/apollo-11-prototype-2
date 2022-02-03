@@ -30,9 +30,8 @@ class Demo
 public:
     Demo(const Point& ptUpperRight) :
         angle(0.0),
-        ptLM(ptUpperRight.getX() / 2.0, ptUpperRight.getY() / 2.0),
         ground(ptUpperRight),
-        LM(0.0, 0.0, 0.0, 0.0)
+        LM(0.0, 0.0, 400.0, 0.0)
     {
         for (int i = 0; i < 50; i++)
         {
@@ -41,7 +40,7 @@ public:
     }
 
     // this is just for test purposes.  Don't make member variables public!
-    Point ptLM;           // location of the LM on the screen
+
     Point ptUpperRight;   // size of the screen
     double angle;         // angle the LM is pointing
     Ground ground;
@@ -77,17 +76,22 @@ void callBack(const Interface* pUI, void* p)
     Demo* pDemo = (Demo*)p;
     
     pDemo->LM.incrementTime(0.03);
-
+    cout << pDemo->LM.getLMPosition().getX();
     // move the ship around
     if (pUI->isRight())
-        pDemo->ptLM.addX(1.0);
+        pDemo->LM.setRightThruster(true);
+    else
+        pDemo->LM.setRightThruster(false);
     if (pUI->isLeft())
-        pDemo->ptLM.addX(-1.0);
+        pDemo->LM.setLeftThruster(true);
+    else
+        pDemo->LM.setLeftThruster(false);
     if (pUI->isUp())
-        pDemo->ptLM.addY(1.0);
-    if (pUI->isDown())
-        pDemo->ptLM.addY(-1.0);
-
+        pDemo->LM.setVerticalThrusters(true);
+    else
+        pDemo->LM.setVerticalThrusters(false);
+    
+    pDemo->LM.incrementAngle(0.0);
     // draw our little stars
     for (Star & star : pDemo->ptStars)
     {
@@ -99,21 +103,21 @@ void callBack(const Interface* pUI, void* p)
     pDemo->ground.draw(gout);
 
     // draw the lander and its flames
-    gout.drawLander(pDemo->ptLM /*position*/, pDemo->angle /*angle*/);
-    gout.drawLanderFlames(pDemo->ptLM, pDemo->angle, /*angle*/
+    gout.drawLander(pDemo->LM.getLMPosition() /*position*/, pDemo->LM.getAngle() /*angle*/);
+    gout.drawLanderFlames(pDemo->LM.getLMPosition(), pDemo->LM.getAngle(), /*angle*/
         pUI->isUp(), pUI->isLeft(), pUI->isRight());
 
     // put some text on the screen
     // need to add speed fuel and altitude  
     
 
-    
+    //setting the text on the screen
     gout.setPosition(Point(30.0, 755.0));
     gout << "The Jeremy Experience TM"  << "\n";
     gout.setPosition(Point(30.0, 740.0));
     gout << "Fuel: N/A" << "\n";
     gout.setPosition(Point(30.0, 725.0));
-    gout << "Altitude: " <<  pDemo->LM.getAltitude() << "\n";
+    gout << "Altitude: " <<  pDemo->LM.getLMPosition().getY() << "\n";
     gout.setPosition(Point(30.0, 710.0));
     gout << "Speed: " << pDemo->LM.getSpeed() << "\n";
     

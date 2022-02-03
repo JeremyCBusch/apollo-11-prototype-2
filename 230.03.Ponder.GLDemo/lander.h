@@ -11,6 +11,7 @@
 // Delete the following line to run in live mode.
 #define DEBUG
 #include <cassert>
+#include "Point.h"
 enum LanderStatus
 {
 	still_in_air,
@@ -44,6 +45,7 @@ private:
 	const double gravity =   -1.625; // m/s^2
 	const double vThrust = 45000.00; // N
 	const double hThrust =   450.00; // N
+	
 	// Variables
 	double vVelocity;
 	double hVelocity;
@@ -51,6 +53,10 @@ private:
 	double altitude;
 	double xDisplacement = 0;
 	double time = 0;
+	Point position;
+	bool isThrusting;
+	bool isThrustingLeft;
+	bool isThrustingRight;
 	// Calculations
 	double computeAcceleration(double thrust, double weight, double gravity = 0.0);
 	double convertDegreesToRadians(double degrees);
@@ -62,11 +68,14 @@ private:
 	void updateVelocity(double seconds);
 	void updateAltitude(double seconds);
 	void updateHDisplacement(double seconds);
-	void updateAngle(double degrees);
+	void incrementAngle(double degrees);
 	void setVerticalThrusters(bool isThrusting);
+	void setLeftThruster(bool isThrusting);
+	void setRightThruster(bool isThrusting);
 	// getters
-	double getAltitude();
 	double getSpeed();
-	double getLMPosition();
+	Point getLMPosition();
+	double getAngle();
+
 };
 

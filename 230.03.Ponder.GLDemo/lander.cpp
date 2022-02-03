@@ -12,6 +12,7 @@
 #include <iostream>
 #include <stdexcept>
 
+
  /*************************
   * LANDER
   * This constructor takes the initial vertical velocity, the initial 
@@ -25,6 +26,8 @@ Lander::Lander(double vVelocity, double hVelocity, double altitude, double angle
 	this->hVelocity = hVelocity;
 	this->altitude = altitude;
 	this->angle = angle;
+	this->position = Point(400,400);
+	this->isThrusting = false;
 }
 
 /*************************
@@ -87,7 +90,11 @@ double Lander::convertDegreesToRadians(double degrees)
 double Lander::getVerticalAcceleration()
 {
 	double radians = convertDegreesToRadians(angle);
-	double force = vThrust * cos(radians);
+	double force = 0;
+	if (isThrusting)
+	{
+		force = vThrust* cos(radians);
+	}
 	return computeAcceleration(force, weight, gravity);
 }
 
@@ -98,7 +105,9 @@ double Lander::getVerticalAcceleration()
 double Lander::getHorizontalAcceleration()
 {
 	double radians = convertDegreesToRadians(angle);
-	double force = hThrust * sin(radians);
+	double force = 0;
+	if (isThrusting)
+		force = hThrust * sin(radians);
 	return computeAcceleration(force, weight) * 100;
 }
 
@@ -109,7 +118,7 @@ double Lander::getHorizontalAcceleration()
  *************************/
 LanderStatus Lander::getFlightStatus(double groundElevation)
 {
-	return LanderStatus();
+	return still_in_air;
 }
 
 /*************************
@@ -156,6 +165,7 @@ double Lander::computeTotalVelocity()
 void Lander::updateAltitude(double seconds)
 {
 	altitude = altitude + vVelocity * seconds + 0.5 * getVerticalAcceleration() * (seconds * seconds);
+	position.setY(altitude);
 }
 
 /*************************
@@ -165,15 +175,31 @@ void Lander::updateAltitude(double seconds)
  *************************/
 void Lander::updateHDisplacement(double seconds)
 {
-	xDisplacement = xDisplacement + hVelocity * seconds + 0.5 * getHorizontalAcceleration() * (seconds * seconds);
+	xDisplacement = xDisplacement - hVelocity * seconds + 0.5 * getHorizontalAcceleration() * (seconds * seconds);
+	position.addX(xDisplacement);
 }
 
 /*************************
  * UPDATE ANGLE
  * This method updates the angle.
  *************************/
-void Lander::updateAngle(double angle)
+void Lander::incrementAngle(double angle)
 {
+	double angleAcceleration;
+	if (isThrustingLeft) 
+	{
+		/*angleAcceleration = weight / 450;*/
+		this->angle += .1;
+	}
+	else if (isThrustingRight)
+	{
+		//angleAcceleration = (weight / 450) * -1;
+		this->angle -= .1;
+	}
+	
+	
+	
+	//this->angle += angle;
 }
 /*************************
  * SET VERTICAL THRUSTERS
@@ -181,16 +207,20 @@ void Lander::updateAngle(double angle)
  *************************/
 void Lander::setVerticalThrusters(bool isThrusting)
 {
+	this->isThrusting = isThrusting;
 }
 
-/*************************
- * GET ALTITUDE
- * Returns altitude of the lander
- *************************/
-double Lander::getAltitude()
+void Lander::setLeftThruster(bool isThrusting)
 {
-	return altitude;
+	isThrustingLeft = isThrusting;
 }
+
+void Lander::setRightThruster(bool isThrusting)
+{
+	isThrustingRight = isThrusting;
+}
+
+
 
 /*************************
  * GET SPEED
@@ -205,7 +235,14 @@ double Lander::getSpeed()
  * GET LM POSITION
  * Returns the LM position.
  *************************/
-double Lander::getLMPosition()
+Point Lander::getLMPosition()
 {
-	return 0.0;
+	return position;
 }
+
+double Lander::getAngle()
+{
+	return angle;
+}
+
+
