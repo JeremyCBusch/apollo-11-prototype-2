@@ -45,6 +45,7 @@ private:
 	const double gravity =   -1.625; // m/s^2
 	const double vThrust = 45000.00; // N
 	const double hThrust =   450.00; // N
+	const int width = 9;
 	
 	// Variables
 	double vVelocity;
@@ -76,6 +77,7 @@ private:
 	double getSpeed();
 	Point getLMPosition();
 	double getAngle();
+	int getWidth();
 
 };
 

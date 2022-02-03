@@ -31,7 +31,7 @@ public:
     Demo(const Point& ptUpperRight) :
         angle(0.0),
         ground(ptUpperRight),
-        LM(0.0, 0.0, 400.0, 0.0)
+        LM(1.16, 0.0, 0.0, 0.0)
     {
         for (int i = 0; i < 50; i++)
         {
@@ -75,8 +75,9 @@ void callBack(const Interface* pUI, void* p)
     // is the first step of every single callback function in OpenGL. 
     Demo* pDemo = (Demo*)p;
     
-    pDemo->LM.incrementTime(0.03);
-    cout << pDemo->LM.getLMPosition().getX();
+    pDemo->LM.incrementTime(1.0 / 30.0);
+    if (pDemo->ground.onPlatform(pDemo->LM.getLMPosition(), pDemo->LM.getWidth()))
+        std::cout << "We hit the ground boiz" << std::endl;
     // move the ship around
     if (pUI->isRight())
         pDemo->LM.setRightThruster(true);

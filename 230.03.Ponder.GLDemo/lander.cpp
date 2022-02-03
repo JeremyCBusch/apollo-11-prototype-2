@@ -20,14 +20,16 @@
   * lander as parameters and sets the associated member variables 
   * accordingly.
   *************************/
-Lander::Lander(double vVelocity, double hVelocity, double altitude, double angle)
+Lander::Lander(double vVelocity, double hVelocity, double altitude, double angle) : 
+	position(400, altitude)
 {
 	this->vVelocity = vVelocity;
 	this->hVelocity = hVelocity;
 	this->altitude = altitude;
 	this->angle = angle;
-	this->position = Point(400,400);
 	this->isThrusting = false;
+	this->isThrustingLeft = false;
+	this->isThrustingRight = false;
 }
 
 /*************************
@@ -164,7 +166,7 @@ double Lander::computeTotalVelocity()
  *************************/
 void Lander::updateAltitude(double seconds)
 {
-	altitude = altitude + vVelocity * seconds + 0.5 * getVerticalAcceleration() * (seconds * seconds);
+	altitude = altitude + (vVelocity * seconds + 0.5 * getVerticalAcceleration() * (seconds * seconds));
 	position.setY(altitude);
 }
 
@@ -175,8 +177,8 @@ void Lander::updateAltitude(double seconds)
  *************************/
 void Lander::updateHDisplacement(double seconds)
 {
-	xDisplacement = xDisplacement - hVelocity * seconds + 0.5 * getHorizontalAcceleration() * (seconds * seconds);
-	position.addX(xDisplacement);
+	xDisplacement = xDisplacement + (-1 * (hVelocity * seconds + 0.5 * getHorizontalAcceleration() * (seconds * seconds)));
+	position.setX(xDisplacement);
 }
 
 /*************************
@@ -189,12 +191,12 @@ void Lander::incrementAngle(double angle)
 	if (isThrustingLeft) 
 	{
 		/*angleAcceleration = weight / 450;*/
-		this->angle += .1;
+		this->angle = this->angle - 1;
 	}
 	else if (isThrustingRight)
 	{
 		//angleAcceleration = (weight / 450) * -1;
-		this->angle -= .1;
+		this->angle = this->angle + 1;
 	}
 	
 	
@@ -242,7 +244,12 @@ Point Lander::getLMPosition()
 
 double Lander::getAngle()
 {
-	return angle;
+	return convertDegreesToRadians(angle);
+}
+
+int Lander::getWidth()
+{
+	return width;
 }
 
 
