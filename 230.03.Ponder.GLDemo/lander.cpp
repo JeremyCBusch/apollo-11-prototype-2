@@ -18,7 +18,7 @@
   * This constructor takes the initial vertical velocity, the initial 
   * horizontal velocity, the initial altitude, and the angle of the 
   * lander as parameters and sets the associated member variables 
-  * accordingly.
+  * accordingly
   *************************/
 Lander::Lander(double vVelocity, double hVelocity, double altitude, double angle) : 
 	position(400, altitude)
@@ -169,14 +169,18 @@ void Lander::incrementAngle()
 	if (isThrustingLeft) 
 	{
 		/*angleAcceleration = weight / 450;*/
-		this->angle = this->angle - 1;
+		this->angle = this->angle + 1;
 	}
 	else if (isThrustingRight)
 	{
 		//angleAcceleration = (weight / 450) * -1;
-		this->angle = this->angle + 1;
+		this->angle = this->angle - 1;
 	}
 }
+/*************************
+ * DECREMENT FUEL
+ * This method updates the amount of fuel based on if the thrusters are on
+ *************************/
 void Lander::decrementFuel(double seconds)
 {
 	if (isThrusting)
@@ -212,6 +216,10 @@ void Lander::setVerticalThrusters(bool isThrusting)
 		this->isThrusting = false;
 }
 
+/*************************
+ * SET LEFT THRUSTERS
+ * This method sets the left thruster on or off and updates the angle.
+ *************************/
 void Lander::setLeftThruster(bool isThrusting)
 {
 	if (fuel > 0.0)
@@ -220,6 +228,10 @@ void Lander::setLeftThruster(bool isThrusting)
 		isThrustingLeft = false;
 }
 
+/*************************
+ * SET RIGHT THRUSTERS
+ * This method sets the right thruster on or off and updates the angle.
+ *************************/
 void Lander::setRightThruster(bool isThrusting)
 {
 	if (fuel > 0.0)
@@ -248,16 +260,28 @@ Point Lander::getLMPosition()
 	return position;
 }
 
+/*************************
+ * GET ANGLE
+ * Returns the LM angle
+ *************************/
 double Lander::getAngle()
 {
 	return convertDegreesToRadians(angle);
 }
 
+/*************************
+ * GET WIDTH
+ * Returns the LM width.
+ *************************/
 int Lander::getWidth()
 {
 	return width;
 }
 
+/*************************
+ * GET FUEL
+ * Returns the LM fuel.
+ *************************/
 double Lander::getFuel()
 {
 	return fuel;
