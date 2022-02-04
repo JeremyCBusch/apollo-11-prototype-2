@@ -35,29 +35,32 @@ public:
 	// Update Data
 	void incrementTime(double seconds);
 	void changeAngle(double angle);
-	// Show Progress
-	void displayStatus();
-#ifndef DEBUG
+	void setVerticalThrusters(bool isThrusting);
+	void setLeftThruster(bool isThrusting);
+	void setRightThruster(bool isThrusting);
+	// getters
+	double getSpeed();
+	Point getLMPosition();
+	double getAngle();
+	int getWidth();
+	double getFuel();
 private:
-#endif
 	// Constants
-	const double weight =  15103.00; // kg
+	double weight  = 15103.00; // kg
 	const double gravity =   -1.625; // m/s^2
 	const double vThrust = 45000.00; // N
 	const double hThrust =   450.00; // N
-	const int width = 9;
+	const int    width   =       20; // m
 	
 	// Variables
 	double vVelocity;
 	double hVelocity;
 	double angle;
-	double altitude;
-	double xDisplacement = 0;
-	double time = 0;
 	Point position;
 	bool isThrusting;
 	bool isThrustingLeft;
 	bool isThrustingRight;
+	double fuel = 5000;
 	// Calculations
 	double computeAcceleration(double thrust, double weight, double gravity = 0.0);
 	double convertDegreesToRadians(double degrees);
@@ -69,15 +72,8 @@ private:
 	void updateVelocity(double seconds);
 	void updateAltitude(double seconds);
 	void updateHDisplacement(double seconds);
-	void incrementAngle(double degrees);
-	void setVerticalThrusters(bool isThrusting);
-	void setLeftThruster(bool isThrusting);
-	void setRightThruster(bool isThrusting);
-	// getters
-	double getSpeed();
-	Point getLMPosition();
-	double getAngle();
-	int getWidth();
+	void incrementAngle();
+	void decrementFuel(double seconds);
 
 };
 

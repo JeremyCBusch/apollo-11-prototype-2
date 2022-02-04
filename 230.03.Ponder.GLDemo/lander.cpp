@@ -25,7 +25,6 @@ Lander::Lander(double vVelocity, double hVelocity, double altitude, double angle
 {
 	this->vVelocity = vVelocity;
 	this->hVelocity = hVelocity;
-	this->altitude = altitude;
 	this->angle = angle;
 	this->isThrusting = false;
 	this->isThrustingLeft = false;
@@ -40,30 +39,11 @@ Lander::Lander(double vVelocity, double hVelocity, double altitude, double angle
  *************************/
 void Lander::incrementTime(double seconds)
 {
-	this->time += seconds;
-
 	updateVelocity(seconds);
 	updateHDisplacement(seconds);
 	updateAltitude(seconds);
-}
-
-/*************************
- * DISPLAY STATUS
- * This method displays the current status of the lander to the 
- * console.
- *************************/
-void Lander::displayStatus()
-{
-	std::cout.setf(std::ios::fixed | std::ios::showpoint);
-	std::cout.precision(2);
-	std::cout 
-		<< time << "s - x,y:(" 
-		<< xDisplacement << ", " 
-		<< altitude << ")m  dx, dy:("
-		<< hVelocity << ", " 
-		<< vVelocity << ")m / s  speed : "
-		<< this->computeTotalVelocity() << "m / s  angle : "
-		<< angle << "deg" << std::endl;
+	decrementFuel(seconds);
+	incrementAngle();
 }
 
 /*************************
@@ -166,8 +146,7 @@ double Lander::computeTotalVelocity()
  *************************/
 void Lander::updateAltitude(double seconds)
 {
-	altitude = altitude + (vVelocity * seconds + 0.5 * getVerticalAcceleration() * (seconds * seconds));
-	position.setY(altitude);
+	position.setY(position.getY() + (vVelocity * seconds + 0.5 * getVerticalAcceleration() * (seconds * seconds)));
 }
 
 /*************************
@@ -177,15 +156,14 @@ void Lander::updateAltitude(double seconds)
  *************************/
 void Lander::updateHDisplacement(double seconds)
 {
-	xDisplacement = xDisplacement + (-1 * (hVelocity * seconds + 0.5 * getHorizontalAcceleration() * (seconds * seconds)));
-	position.setX(xDisplacement);
+	position.setX(position.getX() +(-1 * (hVelocity * seconds + 0.5 * getHorizontalAcceleration() * (seconds * seconds))));
 }
 
 /*************************
  * UPDATE ANGLE
  * This method updates the angle.
  *************************/
-void Lander::incrementAngle(double angle)
+void Lander::incrementAngle()
 {
 	double angleAcceleration;
 	if (isThrustingLeft) 
@@ -198,10 +176,29 @@ void Lander::incrementAngle(double angle)
 		//angleAcceleration = (weight / 450) * -1;
 		this->angle = this->angle + 1;
 	}
-	
-	
-	
-	//this->angle += angle;
+}
+void Lander::decrementFuel(double seconds)
+{
+	if (isThrusting)
+	{
+		double fuelConsumed = 100.0 * seconds;
+		fuel = fuel - fuelConsumed;
+		weight = weight - fuelConsumed;
+	}
+	if (isThrustingLeft)
+	{
+		double fuelConsumed = 1 * seconds;
+		fuel = fuel - fuelConsumed;
+		weight = weight - fuelConsumed;
+	}
+	if (isThrustingRight)
+	{
+		double fuelConsumed = 1 * seconds;
+		fuel = fuel - fuelConsumed;
+		weight = weight - fuelConsumed;
+	}
+	if (fuel < 0.0)
+		fuel = 0.0;
 }
 /*************************
  * SET VERTICAL THRUSTERS
@@ -209,17 +206,26 @@ void Lander::incrementAngle(double angle)
  *************************/
 void Lander::setVerticalThrusters(bool isThrusting)
 {
-	this->isThrusting = isThrusting;
+	if (fuel > 0.0)
+		this->isThrusting = isThrusting;
+	else
+		this->isThrusting = false;
 }
 
 void Lander::setLeftThruster(bool isThrusting)
 {
-	isThrustingLeft = isThrusting;
+	if (fuel > 0.0)
+		isThrustingLeft = isThrusting;
+	else
+		isThrustingLeft = false;
 }
 
 void Lander::setRightThruster(bool isThrusting)
 {
-	isThrustingRight = isThrusting;
+	if (fuel > 0.0)
+		isThrustingRight = isThrusting;
+	else
+		isThrustingLeft = false;
 }
 
 
@@ -250,6 +256,11 @@ double Lander::getAngle()
 int Lander::getWidth()
 {
 	return width;
+}
+
+double Lander::getFuel()
+{
+	return fuel;
 }
 
 
