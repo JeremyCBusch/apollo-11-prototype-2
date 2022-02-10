@@ -6,10 +6,11 @@
  * 3. Assignment Description:
  *      Simulate the Apollo 11 landing
  * 4. What was the hardest part? Be as specific as possible.
- *      gettting the lander object created. We had an error where the header file wasn't put   
- *      in the header file folder that caused an error code that we didn't recognize.
+ *      The hardest part was integrating the LM with the graphicson the screen. We
+ *      had lots of quirks with the lander going in the wrong direction and the lander only 
+ *      starting at the left side of the screen.
  * 5. How long did it take for you to complete the assignment?
- *      3 hours
+ *      4 hours
  *****************************************************************/
 
 #include "point.h"
@@ -122,18 +123,14 @@ void callBack(const Interface* pUI, void* p)
     // draw our little stars
     for (Star & star : pDemo->ptStars)
     {
-        gout.drawStar(star.getPoint(), star.getPhase());
-        star.incrementPhase();
+        star.draw(gout);
     }
 
     // draw the ground
     pDemo->ground.draw(gout);
 
     // draw the lander and its flames
-    gout.drawLander(pDemo->LM.getLMPosition() /*position*/, pDemo->LM.getAngle() /*angle*/);
-    if (pDemo->LM.getFuel() > 0.0)
-        gout.drawLanderFlames(pDemo->LM.getLMPosition(), pDemo->LM.getAngle(), /*angle*/
-            pUI->isUp(), pUI->isLeft(), pUI->isRight());
+    pDemo->LM.draw(gout, pUI->isUp(), pUI->isRight(), pUI->isLeft());
 
     // put some text on the screen
     // need to add speed fuel and altitude  

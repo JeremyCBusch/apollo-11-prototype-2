@@ -287,4 +287,14 @@ double Lander::getFuel()
 	return fuel;
 }
 
+void Lander::draw(ogstream& gout, bool isUp, bool isRight, bool isLeft)
+{
+	//lander
+	gout.drawLander(getLMPosition(), getAngle());
+
+	// flames
+	if (getFuel() > 0.0)
+		gout.drawLanderFlames(getLMPosition(), getAngle(), isUp, isLeft, isRight);
+}
+
 

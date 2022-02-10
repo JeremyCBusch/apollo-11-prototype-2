@@ -20,3 +20,9 @@ unsigned char Star::getPhase()
 {
 	return phase;
 }
+
+void Star::draw(ogstream& gout)
+{
+	gout.drawStar(this->point, this-> phase);
+	this->incrementPhase();
+}

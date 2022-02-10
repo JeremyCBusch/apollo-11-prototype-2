@@ -12,6 +12,7 @@
 #define DEBUG
 #include <cassert>
 #include "Point.h"
+#include "uiDraw.h"
 enum LanderStatus
 {
 	still_in_air,
@@ -44,6 +45,8 @@ public:
 	double getAngle();
 	int getWidth();
 	double getFuel();
+	//draw
+	void draw(ogstream& gout, bool isUp, bool isRight, bool isLeft);
 private:
 	// Constants
 	double weight  = 15103.00; // kg
