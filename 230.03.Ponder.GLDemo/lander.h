@@ -46,7 +46,7 @@ public:
 	double getFuel();
 private:
 	// Constants
-	double weight  = 15103.00; // kg
+	double weight =        15103.00; // kg
 	const double gravity =   -1.625; // m/s^2
 	const double vThrust = 45000.00; // N
 	const double hThrust =   450.00; // N
