@@ -9,7 +9,7 @@
 class Star
 {
 public:
-	Star(const Point& point, unsigned char phase);
+	Star(const Point& point);
 
 	const Point& getPoint();
 	unsigned char getPhase();

@@ -1,9 +1,9 @@
 #include "Star.h"
 
-Star::Star(const Point& point, unsigned char phase)
+Star::Star(const Point& upperRight)
 {
-	this->point = Point(point.getX(), point.getY());
-	this->phase = phase;
+	this->point = Point(random(0.0, upperRight.getX()), random(50.0, upperRight.getY()));
+	this->phase = (unsigned char)random(0, 255);
 }
 
 void Star::incrementPhase()

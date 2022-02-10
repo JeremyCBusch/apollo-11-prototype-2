@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="glDemo.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="lander.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="uiInteract.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="game.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="lander.h" />
     <ClInclude Include="point.h" />

@@ -20,15 +20,17 @@
   * lander as parameters and sets the associated member variables 
   * accordingly
   *************************/
-Lander::Lander(double vVelocity, double hVelocity, double altitude, double angle) : 
-	position(400, altitude)
+
+Lander::Lander(Point ptUpperRight) : 
+	hVelocity(10.0),
+	vVelocity(-10.0),
+	angle(320.0),
+	position
+	(
+		ptUpperRight.getX() - (ptUpperRight.getX() / 8), 
+		ptUpperRight.getY() - (ptUpperRight.getY() / 5)
+	)
 {
-	this->vVelocity = vVelocity;
-	this->hVelocity = hVelocity;
-	this->angle = angle;
-	this->isThrusting = false;
-	this->isThrustingLeft = false;
-	this->isThrustingRight = false;
 }
 
 /*************************
@@ -39,11 +41,14 @@ Lander::Lander(double vVelocity, double hVelocity, double altitude, double angle
  *************************/
 void Lander::incrementTime(double seconds)
 {
-	updateVelocity(seconds);
-	updateHDisplacement(seconds);
-	updateAltitude(seconds);
-	decrementFuel(seconds);
-	incrementAngle();
+	if (getFlightStatus() == STILL_IN_AIR)
+	{
+		updateVelocity(seconds);
+		updateHDisplacement(seconds);
+		updateAltitude(seconds);
+		decrementFuel(seconds);
+		incrementAngle();
+	}
 }
 
 /*************************
@@ -98,9 +103,9 @@ double Lander::getHorizontalAcceleration()
  * GET FLIGHT STATUS
  * Returns if the lander is still in the air, crashed, or landed.
  *************************/
-LanderStatus Lander::getFlightStatus(double groundElevation)
+LanderStatus Lander::getFlightStatus()
 {
-	return still_in_air;
+	return status;
 }
 
 /*************************
@@ -240,7 +245,35 @@ void Lander::setRightThruster(bool isThrusting)
 		isThrustingLeft = false;
 }
 
+void Lander::landed()
+{
+	if (abs(getSpeed()) > 4.0)
+		this->status = CRASHED;
+	else if (abs(getSpeed()) <= 2.0)
+		this->status = SOFT_LANDING;
+	else
+		this->status = HARD_LANDING;
+}
 
+void Lander::crashed()
+{
+	status = CRASHED;
+}
+
+void Lander::reset(Point ptUpperRight)
+{
+	fuel = 5000.0;
+	weight = 15103.00;
+	isThrusting = false;
+	isThrustingLeft = false;
+	isThrustingRight = false;
+	hVelocity = 10.0;
+	vVelocity = -10.0;
+	angle = 320.0;
+	position.setX(ptUpperRight.getX() - (ptUpperRight.getX() / 8));
+	position.setY(ptUpperRight.getY() - (ptUpperRight.getY() / 5));
+	status = STILL_IN_AIR;
+}
 
 /*************************
  * GET SPEED
@@ -255,9 +288,22 @@ double Lander::getSpeed()
  * GET LM POSITION
  * Returns the LM position.
  *************************/
-Point Lander::getLMPosition()
+Point Lander::getPosition()
 {
 	return position;
+}
+
+void Lander::draw(ogstream& gout, bool isUp, bool isRight, bool isLeft)
+{
+	//lander
+	gout.drawLander(getPosition(), getAngle());
+
+	if (getFlightStatus() == STILL_IN_AIR)
+	{
+		// flames
+		if (getFuel() > 0.0)
+			gout.drawLanderFlames(getPosition(), getAngle(), isUp, isLeft, isRight);
+	}
 }
 
 /*************************
@@ -285,16 +331,6 @@ int Lander::getWidth()
 double Lander::getFuel()
 {
 	return fuel;
-}
-
-void Lander::draw(ogstream& gout, bool isUp, bool isRight, bool isLeft)
-{
-	//lander
-	gout.drawLander(getLMPosition(), getAngle());
-
-	// flames
-	if (getFuel() > 0.0)
-		gout.drawLanderFlames(getLMPosition(), getAngle(), isUp, isLeft, isRight);
 }
 
 

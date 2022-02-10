@@ -13,11 +13,13 @@
 #include <cassert>
 #include "Point.h"
 #include "uiDraw.h"
+
 enum LanderStatus
 {
-	still_in_air,
-	landed,
-	crashed
+	STILL_IN_AIR,
+	HARD_LANDING,
+	SOFT_LANDING,
+	CRASHED
 };
 
  /*************************
@@ -32,19 +34,23 @@ class Lander
 {
 public:
 	// Constructor
-	Lander(double vVelocity, double hVelocity, double altitude, double angle);
+	Lander(Point ptUpperRight);
 	// Update Data
 	void incrementTime(double seconds);
 	void changeAngle(double angle);
 	void setVerticalThrusters(bool isThrusting);
 	void setLeftThruster(bool isThrusting);
 	void setRightThruster(bool isThrusting);
+	void landed();
+	void crashed();
+	void reset(Point ptUpperRight);
 	// getters
-	double getSpeed();
-	Point getLMPosition();
-	double getAngle();
 	int getWidth();
 	double getFuel();
+	double getSpeed();
+	double getAngle();
+	Point getPosition();
+	LanderStatus getFlightStatus();
 	//draw
 	void draw(ogstream& gout, bool isUp, bool isRight, bool isLeft);
 private:
@@ -54,23 +60,22 @@ private:
 	const double vThrust = 45000.00; // N
 	const double hThrust =   450.00; // N
 	const int    width   =       20; // m
-	
 	// Variables
 	double vVelocity;
 	double hVelocity;
 	double angle;
 	Point position;
-	bool isThrusting;
-	bool isThrustingLeft;
-	bool isThrustingRight;
+	bool isThrusting = false;
+	bool isThrustingLeft = false;
+	bool isThrustingRight = false;
 	double fuel = 5000;
+	LanderStatus status = STILL_IN_AIR;
 	// Calculations
 	double computeAcceleration(double thrust, double weight, double gravity = 0.0);
 	double convertDegreesToRadians(double degrees);
 	double computeTotalVelocity();
 	double getVerticalAcceleration();
 	double getHorizontalAcceleration();
-	LanderStatus getFlightStatus(double groundElevation);
 	// Update Variables
 	void updateVelocity(double seconds);
 	void updateAltitude(double seconds);
