@@ -2,27 +2,23 @@
  * 1. Name:
  *      Jacob Morgan, Jeremy Busch
  * 2. Assignment Name:
- *      Lab 04: Apollo 11 Visuals
+ *      Lab 06: Apollo 11 Simulation
  * 3. Assignment Description:
  *      Simulate the Apollo 11 landing
  * 4. What was the hardest part? Be as specific as possible.
- *      The hardest part was integrating the LM with the graphicson the screen. We
- *      had lots of quirks with the lander going in the wrong direction and the lander only 
- *      starting at the left side of the screen.
+ *      We had a hard time finding a simeple bug. We didn't realize
+ *      that we needed to pass in the angle of the lander to the 
+ *      draw method in radians. Once we realized that was our issue,
+ *      we didn't have too many problems.
  * 5. How long did it take for you to complete the assignment?
- *      4 hours
+ *      4.5 hours
  *****************************************************************/
 
 #include "point.h"
 #include "uiInteract.h"
 #include "uiDraw.h"
-#include "ground.h"
-#include "Star.h"
-#include <vector>
-#include "lander.h"
 #include "game.h"
 #include <cmath>
-using namespace std;
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 800;

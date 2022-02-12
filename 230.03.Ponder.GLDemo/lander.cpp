@@ -22,9 +22,9 @@
   *************************/
 
 Lander::Lander(Point ptUpperRight) : 
-	hVelocity(10.0),
-	vVelocity(-10.0),
-	angle(320.0),
+	hVelocity(30.0), vVelocity(-10.0), angle(320.0),
+	weight(15103.00), isThrusting(false), isThrustingLeft(false),
+	isThrustingRight(false), fuel(5000.0), status(STILL_IN_AIR),
 	position
 	(
 		ptUpperRight.getX() - (ptUpperRight.getX() / 8), 
@@ -47,27 +47,8 @@ void Lander::incrementTime(double seconds)
 		updateHDisplacement(seconds);
 		updateAltitude(seconds);
 		decrementFuel(seconds);
-		incrementAngle();
+		incrementAngle(seconds);
 	}
-}
-
-/*************************
- * CHANGE ANGLE
- * This method updates the angle of the lander.
- *************************/
-void Lander::changeAngle(double angle)
-{
-	this->angle = angle;
-}
-
-/*************************
- * CONVERT DEGREES TO RADIANS
- * This method takes in a value in degrees and returns it in radians.
- *************************/
-double Lander::convertDegreesToRadians(double degrees)
-{
-	const double pi = 3.14159265358979323846;
-	return (2 * pi * degrees) / 360;
 }
 
 /*************************
@@ -76,7 +57,7 @@ double Lander::convertDegreesToRadians(double degrees)
  *************************/
 double Lander::getVerticalAcceleration()
 {
-	double radians = convertDegreesToRadians(angle);
+	double radians = angle;
 	double force = 0;
 	if (isThrusting)
 	{
@@ -91,7 +72,7 @@ double Lander::getVerticalAcceleration()
  *************************/
 double Lander::getHorizontalAcceleration()
 {
-	double radians = convertDegreesToRadians(angle);
+	double radians = angle;
 	double force = 0;
 	if (isThrusting)
 		force = hThrust * sin(radians);
@@ -168,18 +149,18 @@ void Lander::updateHDisplacement(double seconds)
  * UPDATE ANGLE
  * This method updates the angle.
  *************************/
-void Lander::incrementAngle()
+void Lander::incrementAngle(double seconds)
 {
 	double angleAcceleration;
 	if (isThrustingLeft) 
 	{
 		/*angleAcceleration = weight / 450;*/
-		this->angle = this->angle + 1;
+		this->angle = this->angle + (0.5 * seconds);
 	}
 	else if (isThrustingRight)
 	{
 		//angleAcceleration = (weight / 450) * -1;
-		this->angle = this->angle - 1;
+		this->angle = this->angle - (0.5 * seconds);
 	}
 }
 /*************************
@@ -267,7 +248,7 @@ void Lander::reset(Point ptUpperRight)
 	isThrusting = false;
 	isThrustingLeft = false;
 	isThrustingRight = false;
-	hVelocity = 10.0;
+	hVelocity = 30.0;
 	vVelocity = -10.0;
 	angle = 320.0;
 	position.setX(ptUpperRight.getX() - (ptUpperRight.getX() / 8));
@@ -298,12 +279,8 @@ void Lander::draw(ogstream& gout, bool isUp, bool isRight, bool isLeft)
 	//lander
 	gout.drawLander(getPosition(), getAngle());
 
-	if (getFlightStatus() == STILL_IN_AIR)
-	{
-		// flames
-		if (getFuel() > 0.0)
-			gout.drawLanderFlames(getPosition(), getAngle(), isUp, isLeft, isRight);
-	}
+	if (getFlightStatus() == STILL_IN_AIR && getFuel() > 0.0)
+		gout.drawLanderFlames(getPosition(), getAngle(), isUp, isLeft, isRight);
 }
 
 /*************************
@@ -312,7 +289,7 @@ void Lander::draw(ogstream& gout, bool isUp, bool isRight, bool isLeft)
  *************************/
 double Lander::getAngle()
 {
-	return convertDegreesToRadians(angle);
+	return angle;
 }
 
 /*************************

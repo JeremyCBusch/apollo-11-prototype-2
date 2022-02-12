@@ -1,10 +1,8 @@
 #include "game.h"
 
 Game::Game(const Point& ptUpperRight, int FPS) : 
-    ptUpperRight(ptUpperRight),
-    ground(ptUpperRight), 
-    LM(ptUpperRight),
-    FPS(FPS)
+    ptUpperRight(ptUpperRight), ground(ptUpperRight), 
+    LM(ptUpperRight), FPS(FPS)
 {
     for (int i = 0; i < 50; i++)
     {

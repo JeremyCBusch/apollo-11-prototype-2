@@ -37,7 +37,7 @@ public:
 	Lander(Point ptUpperRight);
 	// Update Data
 	void incrementTime(double seconds);
-	void changeAngle(double angle);
+	//void changeAngle(double angle);
 	void setVerticalThrusters(bool isThrusting);
 	void setLeftThruster(bool isThrusting);
 	void setRightThruster(bool isThrusting);
@@ -55,24 +55,23 @@ public:
 	void draw(ogstream& gout, bool isUp, bool isRight, bool isLeft);
 private:
 	// Constants
-	double weight =        15103.00; // kg
 	const double gravity =   -1.625; // m/s^2
 	const double vThrust = 45000.00; // N
 	const double hThrust =   450.00; // N
 	const int    width   =       20; // m
 	// Variables
+	double weight; // we didn't make weight const because we wanted to lower it as we consumed fuel
 	double vVelocity;
 	double hVelocity;
 	double angle;
 	Point position;
-	bool isThrusting = false;
-	bool isThrustingLeft = false;
-	bool isThrustingRight = false;
-	double fuel = 5000;
-	LanderStatus status = STILL_IN_AIR;
+	bool isThrusting;
+	bool isThrustingLeft;
+	bool isThrustingRight;
+	double fuel;
+	LanderStatus status;
 	// Calculations
 	double computeAcceleration(double thrust, double weight, double gravity = 0.0);
-	double convertDegreesToRadians(double degrees);
 	double computeTotalVelocity();
 	double getVerticalAcceleration();
 	double getHorizontalAcceleration();
@@ -80,7 +79,7 @@ private:
 	void updateVelocity(double seconds);
 	void updateAltitude(double seconds);
 	void updateHDisplacement(double seconds);
-	void incrementAngle();
+	void incrementAngle(double seconds);
 	void decrementFuel(double seconds);
 
 };

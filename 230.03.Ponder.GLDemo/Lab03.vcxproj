@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="glDemo.cpp" />
+    <ClCompile Include="source.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="lander.cpp" />
     <ClCompile Include="point.cpp" />
