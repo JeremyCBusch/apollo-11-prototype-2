@@ -9,6 +9,13 @@
 #include "lander.h"
 #include <cmath>
 
+/*************************
+ * GAME
+ * This class represents the game as a whole.
+ * It controls the overall logic of the game
+ * and controls what you see on the screen. 
+ * It controls setup and takedown as well. 
+ *************************/
 class Game
 {
 public:

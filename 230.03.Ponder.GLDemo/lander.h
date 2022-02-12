@@ -37,7 +37,6 @@ public:
    Lander(Point ptUpperRight);
    // Update Data
    void incrementTime(double seconds);
-   //void changeAngle(double angle);
    void setVerticalThrusters(bool isThrusting);
    void setLeftThruster(bool isThrusting);
    void setRightThruster(bool isThrusting);
