@@ -13,6 +13,7 @@
 #include <cassert>
 #include "Point.h"
 #include "uiDraw.h"
+#include "landerSettings.h"
 
 enum LanderStatus
 {
@@ -34,7 +35,7 @@ class Lander
 {
 public:
    // Constructor
-   Lander(Point ptUpperRight);
+   Lander(LanderSettings settings);
    // Update Data
    void incrementTime(double seconds);
    void setVerticalThrusters(bool isThrusting);
@@ -42,7 +43,7 @@ public:
    void setRightThruster(bool isThrusting);
    void landed();
    void crashed();
-   void reset(Point ptUpperRight);
+   void reset(LanderSettings settings);
    // getters
    int getWidth();
    double getFuel();
@@ -51,7 +52,7 @@ public:
    Point getPosition();
    LanderStatus getFlightStatus();
    //draw
-   void draw(ogstream& gout, bool isUp, bool isRight, bool isLeft);
+   void draw(ogstream& gout);
 private:
    // Constants
    const double gravity =   -1.625; // m/s^2

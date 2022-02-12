@@ -11,6 +11,7 @@
 #include "lander.h"
 #include <iostream>
 #include <stdexcept>
+#include "landerSettings.h"
 
 
  /*************************
@@ -20,17 +21,9 @@
   * lander as parameters and sets the associated member variables 
   * accordingly
   *************************/
-
-Lander::Lander(Point ptUpperRight) : 
-   hVelocity(30.0), vVelocity(-10.0), angle(5.5),
-   weight(15103.00), isThrusting(false), isThrustingLeft(false),
-   isThrustingRight(false), fuel(5000.0), status(STILL_IN_AIR),
-   position
-   (
-   	  ptUpperRight.getX() - (ptUpperRight.getX() / 8), 
-   	  ptUpperRight.getY() - (ptUpperRight.getY() / 5)
-   )  
+Lander::Lander(LanderSettings settings)
 {
+   reset(settings);
 }
 
 /*************************
@@ -240,11 +233,11 @@ void Lander::setRightThruster(bool isThrusting)
 void Lander::landed()
 {
    if (abs(getSpeed()) > 4.0)
-   	  this->status = CRASHED;
+      this->status = CRASHED;
    else if (abs(getSpeed()) <= 2.0)
-   	  this->status = SOFT_LANDING;
+      this->status = SOFT_LANDING;
    else
-   	  this->status = HARD_LANDING;
+      this->status = HARD_LANDING;
 }
 
 /*************************
@@ -259,23 +252,24 @@ void Lander::crashed()
 
 /*************************
  * RESET
- * Resets the lander to it's default values so that another round of
- * the game may be played.
+ * Resets the lander to new settings so another game can be played.
  *************************/
-void Lander::reset(Point ptUpperRight)
+void Lander::reset(LanderSettings settings)
 {
-   fuel = 5000.0;
-   weight = 15103.00;
+   fuel = settings.getFuel();
+   hVelocity = settings.getHVelocity();
+   vVelocity = settings.getVVelocity();
+   angle = settings.getAngle();
+   position.setX(settings.getPosition().getX());
+   position.setY(settings.getPosition().getY());
+
+   status = STILL_IN_AIR;
    isThrusting = false;
    isThrustingLeft = false;
    isThrustingRight = false;
-   hVelocity = 30.0;
-   vVelocity = -10.0;
-   angle = 5.5;
-   position.setX(ptUpperRight.getX() - (ptUpperRight.getX() / 8));
-   position.setY(ptUpperRight.getY() - (ptUpperRight.getY() / 5));
-   status = STILL_IN_AIR;
+   weight = 10103.00 + fuel;
 }
+
 
 /*************************
  * GET SPEED
@@ -300,13 +294,17 @@ Point Lander::getPosition()
  * Draws the lander on the screen and, if the lander is still 
  * flying and has fuel, its flame. 
  *************************/
-void Lander::draw(ogstream& gout, bool isUp, bool isRight, bool isLeft)
+void Lander::draw(ogstream& gout)
 {
    //lander
    gout.drawLander(getPosition(), getAngle());
    
    if (getFlightStatus() == STILL_IN_AIR && getFuel() > 0.0)
-   	  gout.drawLanderFlames(getPosition(), getAngle(), isUp, isLeft, isRight);
+   	  gout.drawLanderFlames
+        (
+           getPosition(), getAngle(), isThrusting, 
+           isThrustingLeft, isThrustingRight
+        );
 }
 
 /*************************

@@ -7,7 +7,16 @@
 #include "Star.h"
 #include <vector>
 #include "lander.h"
+#include "difficulty.h"
 #include <cmath>
+
+struct Controls {
+   bool space;
+   bool up;
+   bool down;
+   bool left;
+   bool right;
+};
 
 /*************************
  * GAME
@@ -21,11 +30,11 @@ class Game
 public:
    // Constructors/Destructors
    Game() = delete;
-   Game(const Point& ptUpperRight, int FPS);
+   Game(const Point& ptUpperRight, unsigned short FPS);
    // Display
-   void draw(const Interface* pUI);
+   void draw();
    // Handle game logic
-   void update(const Interface* pUI);
+   void update(const Controls controls);
    bool isGameOver();
    // Start / Reset the game
    void reset();
@@ -35,10 +44,17 @@ private:
    Ground ground;
    std::vector<Star> ptStars;
    Lander LM;
-   int FPS;
+   unsigned short FPS;
+   Difficulty difficulty;
    // Display
    ogstream gout;
    void displayStatus();
    void displayLMStats();
+   void displayDifficulty();
+   // Difficulty for next game
+   void updateDifficulty(const Controls controls);
+   // need this so the difficulty is only incremented once per press
+   bool prevUp = false; 
+   bool prevDn = false;
 };
 

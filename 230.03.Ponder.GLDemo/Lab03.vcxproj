@@ -19,7 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="difficulty.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="landerSettings.cpp" />
     <ClCompile Include="source.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="lander.cpp" />
@@ -29,9 +31,11 @@
     <ClCompile Include="uiInteract.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="difficulty.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="lander.h" />
+    <ClInclude Include="landerSettings.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="uiDraw.h" />

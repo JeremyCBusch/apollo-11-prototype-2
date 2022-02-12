@@ -21,7 +21,7 @@
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 800;
-const double FPS = 10.0;
+const unsigned short BASE_FPS = 10;
 
 /*************************************
  * CALLBACK
@@ -33,8 +33,15 @@ const double FPS = 10.0;
 void callBack(const Interface* pUI, void* p)
 {
    Game* game = (Game*)p;
-   game->update(pUI);
-   game->draw(pUI);
+
+   Controls controls;
+   controls.up    = pUI->isUp();
+   controls.down  = pUI->isDown();
+   controls.left  = pUI->isLeft();
+   controls.right = pUI->isRight();
+   controls.space = pUI->isSpace();
+   game->update(controls);
+   game->draw();
    if (game->isGameOver() && pUI->isSpace())
       game->reset();
 }
@@ -62,7 +69,7 @@ int main(int argc, char** argv)
       ptUpperRight);
 
    // Initialize the game class
-   Game game(ptUpperRight, FPS);
+   Game game(ptUpperRight, BASE_FPS);
 
    // set everything into action
    ui.run(callBack, &game);
