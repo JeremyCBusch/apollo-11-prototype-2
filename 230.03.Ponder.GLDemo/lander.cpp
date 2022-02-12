@@ -22,14 +22,14 @@
   *************************/
 
 Lander::Lander(Point ptUpperRight) : 
-	hVelocity(30.0), vVelocity(-10.0), angle(320.0),
-	weight(15103.00), isThrusting(false), isThrustingLeft(false),
-	isThrustingRight(false), fuel(5000.0), status(STILL_IN_AIR),
-	position
-	(
-		ptUpperRight.getX() - (ptUpperRight.getX() / 8), 
-		ptUpperRight.getY() - (ptUpperRight.getY() / 5)
-	)
+   hVelocity(30.0), vVelocity(-10.0), angle(5.5),
+   weight(15103.00), isThrusting(false), isThrustingLeft(false),
+   isThrustingRight(false), fuel(5000.0), status(STILL_IN_AIR),
+   position
+   (
+   	  ptUpperRight.getX() - (ptUpperRight.getX() / 8), 
+   	  ptUpperRight.getY() - (ptUpperRight.getY() / 5)
+   )  
 {
 }
 
@@ -41,14 +41,14 @@ Lander::Lander(Point ptUpperRight) :
  *************************/
 void Lander::incrementTime(double seconds)
 {
-	if (getFlightStatus() == STILL_IN_AIR)
-	{
-		updateVelocity(seconds);
-		updateHDisplacement(seconds);
-		updateAltitude(seconds);
-		decrementFuel(seconds);
-		incrementAngle(seconds);
-	}
+   if (getFlightStatus() == STILL_IN_AIR)
+   {
+   	  updateVelocity(seconds);
+   	  updateHDisplacement(seconds);
+   	  updateAltitude(seconds);
+   	  decrementFuel(seconds);
+   	  incrementAngle(seconds);
+   }
 }
 
 /*************************
@@ -57,13 +57,13 @@ void Lander::incrementTime(double seconds)
  *************************/
 double Lander::getVerticalAcceleration()
 {
-	double radians = angle;
-	double force = 0;
-	if (isThrusting)
-	{
-		force = vThrust* cos(radians);
-	}
-	return computeAcceleration(force, weight, gravity);
+   double radians = angle;
+   double force = 0;
+   if (isThrusting)
+   {
+   	  force = vThrust* cos(radians);
+   }
+   return computeAcceleration(force, weight, gravity);
 }
 
 /*************************
@@ -72,11 +72,11 @@ double Lander::getVerticalAcceleration()
  *************************/
 double Lander::getHorizontalAcceleration()
 {
-	double radians = angle;
-	double force = 0;
-	if (isThrusting)
-		force = hThrust * sin(radians);
-	return computeAcceleration(force, weight) * 100;
+   double radians = angle;
+   double force = 0;
+   if (isThrusting)
+   	  force = hThrust * sin(radians);
+   return computeAcceleration(force, weight) * 100;
 }
 
 
@@ -86,7 +86,7 @@ double Lander::getHorizontalAcceleration()
  *************************/
 LanderStatus Lander::getFlightStatus()
 {
-	return status;
+   return status;
 }
 
 /*************************
@@ -96,12 +96,13 @@ LanderStatus Lander::getFlightStatus()
  *************************/
 double Lander::computeAcceleration(double thrust, double weight, double gravity)
 {
-	//assert(thrust > 0.0);
-	assert(weight > 0.0);
-	double acceleration = thrust / weight;
-
-	assert(gravity <= 0.0);
-	return gravity + acceleration;
+   //assert(thrust > 0.0);
+   assert(weight > 0.0);
+   double acceleration = thrust / weight;
+   	
+   
+   assert(gravity <= 0.0);
+   return gravity + acceleration;
 }
 
 /*************************
@@ -111,8 +112,8 @@ double Lander::computeAcceleration(double thrust, double weight, double gravity)
  *************************/
 void Lander::updateVelocity(double seconds)
 {
-	vVelocity = vVelocity + getVerticalAcceleration() * seconds;
-	hVelocity = hVelocity + getHorizontalAcceleration() * seconds;
+   vVelocity = vVelocity + getVerticalAcceleration() * seconds;
+   hVelocity = hVelocity + getHorizontalAcceleration() * seconds;
 }
 
 /*************************
@@ -122,7 +123,7 @@ void Lander::updateVelocity(double seconds)
  *************************/
 double Lander::computeTotalVelocity()
 {
-	return sqrt(vVelocity * vVelocity + hVelocity * hVelocity);
+   return sqrt(vVelocity * vVelocity + hVelocity * hVelocity);
 }
 
 /*************************
@@ -132,7 +133,7 @@ double Lander::computeTotalVelocity()
  *************************/
 void Lander::updateAltitude(double seconds)
 {
-	position.setY(position.getY() + (vVelocity * seconds + 0.5 * getVerticalAcceleration() * (seconds * seconds)));
+   position.setY(position.getY() + (vVelocity * seconds + 0.5 * getVerticalAcceleration() * (seconds * seconds)));
 }
 
 /*************************
@@ -142,7 +143,7 @@ void Lander::updateAltitude(double seconds)
  *************************/
 void Lander::updateHDisplacement(double seconds)
 {
-	position.setX(position.getX() +(-1 * (hVelocity * seconds + 0.5 * getHorizontalAcceleration() * (seconds * seconds))));
+   position.setX(position.getX() +(-1 * (hVelocity * seconds + 0.5 * getHorizontalAcceleration() * (seconds * seconds))));
 }
 
 /*************************
@@ -151,17 +152,17 @@ void Lander::updateHDisplacement(double seconds)
  *************************/
 void Lander::incrementAngle(double seconds)
 {
-	double angleAcceleration;
-	if (isThrustingLeft) 
-	{
-		/*angleAcceleration = weight / 450;*/
-		this->angle = this->angle + (0.5 * seconds);
-	}
-	else if (isThrustingRight)
-	{
-		//angleAcceleration = (weight / 450) * -1;
-		this->angle = this->angle - (0.5 * seconds);
-	}
+   double angleAcceleration;
+   if (isThrustingLeft) 
+   {
+   	  /*angleAcceleration = weight / 450;*/
+   	  this->angle = this->angle + (0.5 * seconds);
+   }
+   else if (isThrustingRight)
+   {
+   	  //angleAcceleration = (weight / 450) * -1;
+   	  this->angle = this->angle - (0.5 * seconds);
+   }
 }
 /*************************
  * DECREMENT FUEL
@@ -169,37 +170,41 @@ void Lander::incrementAngle(double seconds)
  *************************/
 void Lander::decrementFuel(double seconds)
 {
-	if (isThrusting)
-	{
-		double fuelConsumed = 100.0 * seconds;
-		fuel = fuel - fuelConsumed;
-		weight = weight - fuelConsumed;
-	}
-	if (isThrustingLeft)
-	{
-		double fuelConsumed = 1 * seconds;
-		fuel = fuel - fuelConsumed;
-		weight = weight - fuelConsumed;
-	}
-	if (isThrustingRight)
-	{
-		double fuelConsumed = 1 * seconds;
-		fuel = fuel - fuelConsumed;
-		weight = weight - fuelConsumed;
-	}
-	if (fuel < 0.0)
-		fuel = 0.0;
+   if (isThrusting)
+   {
+   	  double fuelConsumed = 100.0 * seconds;
+   	  fuel = fuel - fuelConsumed;
+   	  weight = weight - fuelConsumed;
+   }
+   if (isThrustingLeft)
+   {
+   	  double fuelConsumed = 1 * seconds;
+   	  fuel = fuel - fuelConsumed;
+   	  weight = weight - fuelConsumed;
+   }
+   if (isThrustingRight)
+   {
+   	  double fuelConsumed = 1 * seconds;
+   	  fuel = fuel - fuelConsumed;
+   	  weight = weight - fuelConsumed;
+   }
+   if (fuel < 0.0)
+   {
+   	  weight += abs(fuel);
+   	  fuel = 0.0;
+   }
 }
+
 /*************************
  * SET VERTICAL THRUSTERS
  * This method sets the thrusters on or off and updates the acceleration.
  *************************/
 void Lander::setVerticalThrusters(bool isThrusting)
 {
-	if (fuel > 0.0)
-		this->isThrusting = isThrusting;
-	else
-		this->isThrusting = false;
+   if (fuel > 0.0)
+   	  this->isThrusting = isThrusting;
+   else
+   	  this->isThrusting = false;
 }
 
 /*************************
@@ -208,10 +213,10 @@ void Lander::setVerticalThrusters(bool isThrusting)
  *************************/
 void Lander::setLeftThruster(bool isThrusting)
 {
-	if (fuel > 0.0)
-		isThrustingLeft = isThrusting;
-	else
-		isThrustingLeft = false;
+   if (fuel > 0.0)
+   	  isThrustingLeft = isThrusting;
+   else
+   	  isThrustingLeft = false;
 }
 
 /*************************
@@ -220,40 +225,56 @@ void Lander::setLeftThruster(bool isThrusting)
  *************************/
 void Lander::setRightThruster(bool isThrusting)
 {
-	if (fuel > 0.0)
-		isThrustingRight = isThrusting;
-	else
-		isThrustingLeft = false;
+   if (fuel > 0.0)
+	  isThrustingRight = isThrusting;
+   else
+   	  isThrustingLeft = false;
 }
 
+/*************************
+ * LANDED
+ * Signals to the lander that is has landed on the landing pad. The 
+ * status of the lander will be updated according to the velocity during
+ * the landing. 
+ *************************/
 void Lander::landed()
 {
-	if (abs(getSpeed()) > 4.0)
-		this->status = CRASHED;
-	else if (abs(getSpeed()) <= 2.0)
-		this->status = SOFT_LANDING;
-	else
-		this->status = HARD_LANDING;
+   if (abs(getSpeed()) > 4.0)
+   	  this->status = CRASHED;
+   else if (abs(getSpeed()) <= 2.0)
+   	  this->status = SOFT_LANDING;
+   else
+   	  this->status = HARD_LANDING;
 }
 
+/*************************
+ * CRASHED
+ * Signals to the lander that it has crashed into the ground. Changes
+ * the status accordingly.
+ *************************/
 void Lander::crashed()
 {
-	status = CRASHED;
+   status = CRASHED;
 }
 
+/*************************
+ * RESET
+ * Resets the lander to it's default values so that another round of
+ * the game may be played.
+ *************************/
 void Lander::reset(Point ptUpperRight)
 {
-	fuel = 5000.0;
-	weight = 15103.00;
-	isThrusting = false;
-	isThrustingLeft = false;
-	isThrustingRight = false;
-	hVelocity = 30.0;
-	vVelocity = -10.0;
-	angle = 320.0;
-	position.setX(ptUpperRight.getX() - (ptUpperRight.getX() / 8));
-	position.setY(ptUpperRight.getY() - (ptUpperRight.getY() / 5));
-	status = STILL_IN_AIR;
+   fuel = 5000.0;
+   weight = 15103.00;
+   isThrusting = false;
+   isThrustingLeft = false;
+   isThrustingRight = false;
+   hVelocity = 30.0;
+   vVelocity = -10.0;
+   angle = 5.5;
+   position.setX(ptUpperRight.getX() - (ptUpperRight.getX() / 8));
+   position.setY(ptUpperRight.getY() - (ptUpperRight.getY() / 5));
+   status = STILL_IN_AIR;
 }
 
 /*************************
@@ -262,7 +283,7 @@ void Lander::reset(Point ptUpperRight)
  *************************/
 double Lander::getSpeed()
 {
-	return vVelocity;
+   return computeTotalVelocity();
 }
 
 /*************************
@@ -271,16 +292,21 @@ double Lander::getSpeed()
  *************************/
 Point Lander::getPosition()
 {
-	return position;
+   return position;
 }
 
+/*************************
+ * DRAW
+ * Draws the lander on the screen and, if the lander is still 
+ * flying and has fuel, its flame. 
+ *************************/
 void Lander::draw(ogstream& gout, bool isUp, bool isRight, bool isLeft)
 {
-	//lander
-	gout.drawLander(getPosition(), getAngle());
-
-	if (getFlightStatus() == STILL_IN_AIR && getFuel() > 0.0)
-		gout.drawLanderFlames(getPosition(), getAngle(), isUp, isLeft, isRight);
+   //lander
+   gout.drawLander(getPosition(), getAngle());
+   
+   if (getFlightStatus() == STILL_IN_AIR && getFuel() > 0.0)
+   	  gout.drawLanderFlames(getPosition(), getAngle(), isUp, isLeft, isRight);
 }
 
 /*************************
@@ -289,7 +315,7 @@ void Lander::draw(ogstream& gout, bool isUp, bool isRight, bool isLeft)
  *************************/
 double Lander::getAngle()
 {
-	return angle;
+   return angle;
 }
 
 /*************************
@@ -298,7 +324,7 @@ double Lander::getAngle()
  *************************/
 int Lander::getWidth()
 {
-	return width;
+   return width;
 }
 
 /*************************
@@ -307,7 +333,7 @@ int Lander::getWidth()
  *************************/
 double Lander::getFuel()
 {
-	return fuel;
+   return fuel;
 }
 
 

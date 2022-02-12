@@ -18,26 +18,25 @@
 #include "uiInteract.h"
 #include "uiDraw.h"
 #include "game.h"
-#include <cmath>
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 800;
 const double FPS = 10.0;
 
 /*************************************
- * All the interesting work happens here, when
- * I get called back from OpenGL to draw a frame.
- * When I am finished drawing, then the graphics
- * engine will wait until the proper amount of
- * time has passed and put the drawing on the screen.
+ * CALLBACK
+ * This function is called by open GL 30 times per second.
+ * This function runs the core functionality of the game. 
+ * It updates the game, draws it, and, if it is over and the
+ * user presses space, resets the game. 
  **************************************/
 void callBack(const Interface* pUI, void* p)
 {
-    Game* game = (Game*)p;
-    game->update(pUI);
-    game->draw(pUI);
-    if (game->isGameOver() && pUI->isSpace())
-        game->reset();
+   Game* game = (Game*)p;
+   game->update(pUI);
+   game->draw(pUI);
+   if (game->isGameOver() && pUI->isSpace())
+      game->reset();
 }
 
 /*********************************
@@ -57,17 +56,17 @@ int main(int argc, char** argv)
 #endif // !_WIN32
 {
     // Initialize OpenGL
-    Point ptUpperRight(SCREEN_WIDTH, SCREEN_HEIGHT);
-    Interface ui(0, NULL,
-        "Open GL Demo",
-        ptUpperRight);
+   Point ptUpperRight(SCREEN_WIDTH, SCREEN_HEIGHT);
+   Interface ui(0, NULL,
+      "Open GL Demo",
+      ptUpperRight);
 
-    // Initialize the game class
-    Game game(ptUpperRight, FPS);
+   // Initialize the game class
+   Game game(ptUpperRight, FPS);
 
-    // set everything into action
-    ui.run(callBack, &game);
+   // set everything into action
+   ui.run(callBack, &game);
 
-    return 0;
+   return 0;
 }
 
